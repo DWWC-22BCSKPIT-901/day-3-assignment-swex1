@@ -1,0 +1,41 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+bool isMatch(const char *str, const char *pattern) {
+    int strLen = strlen(str);
+    int patLen = strlen(pattern);
+    bool dp[strLen + 1][patLen + 1];
+    memset(dp, false, sizeof(dp));
+    dp[0][0] = true;
+   for (int j = 1; j <= patLen; j++) {
+        if (pattern[j - 1] == '*') {
+            dp[0][j] = dp[0][j - 1];
+        }
+    }
+    for (int i = 1; i <= strLen; i++) {
+        for (int j = 1; j <= patLen; j++) {
+            if (pattern[j - 1] == '*') {
+               
+                dp[i][j] = dp[i][j - 1] || dp[i - 1][j];
+            } else if (pattern[j - 1] == '?' || pattern[j - 1] == str[i - 1]) {
+               
+                dp[i][j] = dp[i - 1][j - 1];
+            } else {
+                dp[i][j] = false;
+            }
+        }
+    }
+   return dp[strLen][patLen];
+}int main() {
+    char str[100], pattern[100];
+   printf("Enter the string: ");
+    scanf("%s", str);
+   printf("Enter the pattern: ");
+    scanf("%s", pattern);
+    if (isMatch(str, pattern)) {
+        printf("The string matches the pattern.\n");
+    } else {
+        printf("The string does not match the pattern.\n");
+    }
+return 0;
+}
